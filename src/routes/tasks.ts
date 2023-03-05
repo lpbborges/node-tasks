@@ -28,14 +28,14 @@ export async function tasksRoute(app: FastifyInstance) {
     return { tasks }
   })
 
-  app.get('/:id', async (request) => {
+  app.get('/:id', { preHandler: [checkTaskExists] }, async (request) => {
     const getTaskParamsSchema = z.object({
       id: z.string().uuid(),
     })
 
     const { id } = getTaskParamsSchema.parse(request.params)
 
-    const task = await knex('tasks').where('id', id).select('*')
+    const task = await knex('tasks').where('id', id).select('*').first()
 
     return { task }
   })
