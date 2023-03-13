@@ -12,9 +12,7 @@ export async function checkTaskExists(
 
   const { id } = getTaskParamsSchema.parse(request.params)
 
-  const task = await knex('tasks').where('id', id).select('*').first()
-
-  console.log('task', task)
+  const task = await knex('tasks').where('id', id).select('id').first()
 
   if (!task) {
     return reply.status(404).send({

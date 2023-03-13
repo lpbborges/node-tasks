@@ -132,4 +132,47 @@ export async function tasksRoute(app: FastifyInstance) {
       return reply.status(204).send()
     },
   )
+
+  app.post('/import', async (request, reply) => {
+    const bodySchema = z.object({
+      csvFile: z.string()
+    })
+
+    const { csvFile } = bodySchema.parse(request.body)
+    const lines = csvFile.split('\n').slice(1)
+    
+    const tasks = lines.filter(line => line).map(line => {
+      const [title, description] = line.split(',')
+
+      return { 
+        id: randomUUID(),
+        title, 
+        description 
+      }
+    })
+
+    await knex('tasks').insert(tasks)
+
+
+    reply.status(204).send()
+  })
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
